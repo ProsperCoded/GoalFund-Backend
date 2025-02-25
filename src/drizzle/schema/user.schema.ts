@@ -1,22 +1,21 @@
 import { pgTable, uuid, text } from 'drizzle-orm/pg-core';
+import { relations, sql } from 'drizzle-orm';
 
 export const user = pgTable('user', {
-  id: uuid().primaryKey(),
+  id: uuid().defaultRandom().primaryKey(),
   email: text().unique().notNull(),
   password: text().notNull(),
   firstName: text().notNull(),
   lastName: text().notNull(),
 
-  profileImage: text().notNull(), // profile url from cloudinary
-  phoneNumber: text(), // mark as nullable
-  created_at: text().notNull().default('NOW()'),
+  profileImage: text(), // profile url from cloudinary
+  phoneNumber: text().notNull(),
+  created_at: text().default(sql`NOW()`),
   updated_at: text()
-    .notNull()
-    .default('NOW()')
+    .default(sql`NOW()`)
     .$onUpdate(() => new Date().toISOString()),
 });
 
-import { relations } from 'drizzle-orm';
 import { contribution } from './contribution.schema';
 import { deposit } from './deposite.schema';
 import { withdrawal } from './withdrawal.schema';

@@ -1,0 +1,654 @@
+{
+  "id": "358ab016-3d0c-437e-bbb3-4c48d77a3c77",
+  "prevId": "8bbce8d7-e394-4c21-8440-7f5044b10074",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.user": {
+      "name": "user",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "password": {
+          "name": "password",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "firstName": {
+          "name": "firstName",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lastName": {
+          "name": "lastName",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "profileImage": {
+          "name": "profileImage",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "phoneNumber": {
+          "name": "phoneNumber",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'NOW()'"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'NOW()'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "user_email_unique": {
+          "name": "user_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.contributions": {
+      "name": "contributions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "organiser": {
+          "name": "organiser",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "contribution_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expiry": {
+          "name": "expiry",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "visibility": {
+          "name": "visibility",
+          "type": "contribution_visibility",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "min_amount": {
+          "name": "min_amount",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "specific_amount": {
+          "name": "specific_amount",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "goal": {
+          "name": "goal",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "balance": {
+          "name": "balance",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "contributions_organiser_user_id_fk": {
+          "name": "contributions_organiser_user_id_fk",
+          "tableFrom": "contributions",
+          "tableTo": "user",
+          "columnsFrom": [
+            "organiser"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.deposits": {
+      "name": "deposits",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "contribution": {
+          "name": "contribution",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "amount": {
+          "name": "amount",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "date": {
+          "name": "date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "deposits_contribution_contributions_id_fk": {
+          "name": "deposits_contribution_contributions_id_fk",
+          "tableFrom": "deposits",
+          "tableTo": "contributions",
+          "columnsFrom": [
+            "contribution"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "deposits_user_id_user_id_fk": {
+          "name": "deposits_user_id_user_id_fk",
+          "tableFrom": "deposits",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.withdrawals": {
+      "name": "withdrawals",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "contribution": {
+          "name": "contribution",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "date": {
+          "name": "date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "amount": {
+          "name": "amount",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "withdrawal_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "purpose": {
+          "name": "purpose",
+          "type": "withdrawal_purpose",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "withdrawals_contribution_contributions_id_fk": {
+          "name": "withdrawals_contribution_contributions_id_fk",
+          "tableFrom": "withdrawals",
+          "tableTo": "contributions",
+          "columnsFrom": [
+            "contribution"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "withdrawals_user_id_user_id_fk": {
+          "name": "withdrawals_user_id_user_id_fk",
+          "tableFrom": "withdrawals",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.proofs": {
+      "name": "proofs",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "withdrawal_id": {
+          "name": "withdrawal_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "date": {
+          "name": "date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "heading": {
+          "name": "heading",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "body": {
+          "name": "body",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "images": {
+          "name": "images",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "proofs_withdrawal_id_withdrawals_id_fk": {
+          "name": "proofs_withdrawal_id_withdrawals_id_fk",
+          "tableFrom": "proofs",
+          "tableTo": "withdrawals",
+          "columnsFrom": [
+            "withdrawal_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.confirmations": {
+      "name": "confirmations",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "proof_id": {
+          "name": "proof_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reviewed_by": {
+          "name": "reviewed_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "confirmed": {
+          "name": "confirmed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "confirmations_proof_id_proofs_id_fk": {
+          "name": "confirmations_proof_id_proofs_id_fk",
+          "tableFrom": "confirmations",
+          "tableTo": "proofs",
+          "columnsFrom": [
+            "proof_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "confirmations_reviewed_by_user_id_fk": {
+          "name": "confirmations_reviewed_by_user_id_fk",
+          "tableFrom": "confirmations",
+          "tableTo": "user",
+          "columnsFrom": [
+            "reviewed_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.expected_participants": {
+      "name": "expected_participants",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "contribution": {
+          "name": "contribution",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "expected_participants_contribution_contributions_id_fk": {
+          "name": "expected_participants_contribution_contributions_id_fk",
+          "tableFrom": "expected_participants",
+          "tableTo": "contributions",
+          "columnsFrom": [
+            "contribution"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "expected_participants_user_id_user_id_fk": {
+          "name": "expected_participants_user_id_user_id_fk",
+          "tableFrom": "expected_participants",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.portal": {
+      "name": "portal",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "contribution": {
+          "name": "contribution",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "image": {
+          "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "expiry": {
+          "name": "expiry",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "payment_credentials": {
+          "name": "payment_credentials",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "portal_contribution_contributions_id_fk": {
+          "name": "portal_contribution_contributions_id_fk",
+          "tableFrom": "portal",
+          "tableTo": "contributions",
+          "columnsFrom": [
+            "contribution"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.contribution_type": {
+      "name": "contribution_type",
+      "schema": "public",
+      "values": [
+        "open",
+        "closed"
+      ]
+    },
+    "public.contribution_visibility": {
+      "name": "contribution_visibility",
+      "schema": "public",
+      "values": [
+        "public",
+        "private"
+      ]
+    },
+    "public.withdrawal_purpose": {
+      "name": "withdrawal_purpose",
+      "schema": "public",
+      "values": [
+        "accomplished",
+        "pending"
+      ]
+    },
+    "public.withdrawal_status": {
+      "name": "withdrawal_status",
+      "schema": "public",
+      "values": [
+        "pending",
+        "approved",
+        "rejected"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

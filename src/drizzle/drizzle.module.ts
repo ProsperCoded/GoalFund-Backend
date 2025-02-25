@@ -7,9 +7,8 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import * as schema from './schema/schema';
 import { DrizzleDB } from 'src/types/db.types';
 import { DRIZZLE_SYMBOL } from 'src/config/constants.config';
+import setupConfig from 'src/config/setup.config';
 
-const MODULE_NAME = 'DrizzleModule';
-export const logger = new Logger(MODULE_NAME);
 @Module({
   imports: [ConfigModule],
   providers: [
@@ -38,7 +37,14 @@ export const logger = new Logger(MODULE_NAME);
           }
           logger.error(error.message, error.stack);
         });
-        await pool.connect(); //this isn't needed because drizzle connects to the pool automatically
+
+        try {
+          await pool.connect();
+          logger.log('Connected to database Successfully 😃');
+        } catch (error) {
+          logger.error('Failed to connect to database:', error);
+        }
+
         return drizzle(pool, { schema }) as DrizzleDB;
       },
     },
@@ -47,4 +53,5 @@ export const logger = new Logger(MODULE_NAME);
   exports: [DRIZZLE_SYMBOL],
 })
 export class DrizzleModule {}
-export { DRIZZLE_SYMBOL };
+
+export const logger = new Logger(DrizzleModule.name);
